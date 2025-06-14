@@ -100,7 +100,7 @@ class Member(BaseModel):
         json_encoders = {ObjectId: str}
 
 class Strike(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
     user_id: str
     guild_id: str
     reason: str
