@@ -361,7 +361,7 @@ async def purge_messages(ctx, amount: int):
             reason=f"Purged {len(deleted) - 1} messages",
             guild_id=str(ctx.guild.id)
         )
-        await db.mod_actions.insert_one(mod_action.dict())
+        await db.mod_actions.insert_one(mod_action.dict(by_alias=True))
         
     except discord.Forbidden:
         await ctx.send("❌ ليس لدي صلاحية لحذف الرسائل / I don't have permission to delete messages")
