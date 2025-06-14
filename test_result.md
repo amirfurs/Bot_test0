@@ -237,7 +237,7 @@ backend:
     file: "server.py"
     stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
@@ -248,6 +248,9 @@ backend:
       - working: true
         agent: "main"
         comment: "Fixed API endpoints by implementing proper JSON encoding using jsonable_encoder and updating all database operations to use the new model structure. All endpoints should now work correctly."
+      - working: true
+        agent: "testing"
+        comment: "All API endpoints are now working correctly. Fixed issues with MongoDB ObjectId serialization and event loop conflicts. Created separate MongoDB clients for API endpoints and Discord bot to prevent 'Task got Future attached to a different loop' errors."
 
 frontend:
   - task: "Dashboard UI"
