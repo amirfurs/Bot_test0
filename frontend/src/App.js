@@ -15,6 +15,7 @@ function App() {
   const [modActions, setModActions] = useState([]);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchBotStatus();
@@ -31,8 +32,10 @@ function App() {
     try {
       const response = await axios.get(`${API}/bot/status`);
       setBotStatus(response.data);
+      setError(null);
     } catch (error) {
       console.error('Error fetching bot status:', error);
+      setError('فشل في الاتصال بالبوت / Failed to connect to bot');
     }
   };
 
@@ -44,8 +47,10 @@ function App() {
         setSelectedGuild(response.data[0]);
       }
       setLoading(false);
+      setError(null);
     } catch (error) {
       console.error('Error fetching guilds:', error);
+      setError('فشل في جلب قائمة الخوادم / Failed to fetch servers');
       setLoading(false);
     }
   };
@@ -65,8 +70,10 @@ function App() {
       setSettings(settingsRes.data);
       setStrikes(strikesRes.data);
       setModActions(actionsRes.data);
+      setError(null);
     } catch (error) {
       console.error('Error fetching guild data:', error);
+      setError('فشل في جلب بيانات الخادم / Failed to fetch server data');
     }
   };
 
@@ -76,9 +83,12 @@ function App() {
     try {
       await axios.put(`${API}/bot/settings/${selectedGuild.id}`, newSettings);
       setSettings({ ...settings, ...newSettings });
+      setError(null);
+      // Show success message
       alert('✅ تم تحديث الإعدادات بنجاح / Settings updated successfully!');
     } catch (error) {
       console.error('Error updating settings:', error);
+      setError('فشل في تحديث الإعدادات / Failed to update settings');
       alert('❌ فشل في تحديث الإعدادات / Failed to update settings');
     }
   };
@@ -93,47 +103,84 @@ function App() {
     });
   };
 
+  const refreshData = async () => {
+    setLoading(true);
+    await fetchBotStatus();
+    await fetchGuilds();
+    if (selectedGuild) {
+      await fetchGuildData();
+    }
+    setLoading(false);
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-800 flex items-center justify-center">
-        <div className="text-white text-2xl">🤖 جاري تحميل البوت... / Loading Bot...</div>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid mx-auto mb-4"></div>
+          <div className="text-white text-2xl font-bold">🤖 جاري تحميل البوت...</div>
+          <div className="text-blue-200 text-lg">Loading SmartModerator...</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-800">
-      {/* Header */}
-      <header className="bg-black/30 backdrop-blur-sm border-b border-white/10">
-        <div className="container mx-auto px-6 py-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800">
+      {/* Enhanced Header */}
+      <header className="bg-black/40 backdrop-blur-lg border-b border-white/20 shadow-2xl">
+        <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 rtl:space-x-reverse">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-2xl">🤖</span>
+            <div className="flex items-center space-x-6 rtl:space-x-reverse">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 rounded-full flex items-center justify-center shadow-xl">
+                <span className="text-3xl">🤖</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">المنظِّم الذكي</h1>
-                <p className="text-blue-200">SmartModerator Dashboard</p>
+                <h1 className="text-3xl font-bold text-white mb-1">المنظِّم الذكي</h1>
+                <p className="text-blue-200 text-lg">SmartModerator Dashboard</p>
+                {selectedGuild && (
+                  <p className="text-purple-300 text-sm">خادم: {selectedGuild.name}</p>
+                )}
               </div>
             </div>
             
-            <div className="flex items-center space-x-4 rtl:space-x-reverse">
+            <div className="flex items-center space-x-6 rtl:space-x-reverse">
+              {/* Refresh Button */}
+              <button
+                onClick={refreshData}
+                className="bg-white/10 hover:bg-white/20 text-white p-3 rounded-full transition-all duration-200 shadow-lg"
+                title="تحديث البيانات / Refresh Data"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+
+              {/* Bot Status */}
               {botStatus && (
-                <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                  <div className={`w-3 h-3 rounded-full ${botStatus.status === 'online' ? 'bg-green-400' : 'bg-red-400'}`}></div>
-                  <span className="text-white">{botStatus.status === 'online' ? 'متصل' : 'غير متصل'}</span>
+                <div className="bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
+                  <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                    <div className={`w-4 h-4 rounded-full animate-pulse ${botStatus.status === 'online' ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                    <span className="text-white font-medium">
+                      {botStatus.status === 'online' ? 'متصل' : 'غير متصل'}
+                    </span>
+                    <span className="text-blue-200 text-sm">
+                      {botStatus.guilds} خادم | {botStatus.users} مستخدم
+                    </span>
+                  </div>
                 </div>
               )}
               
-              {selectedGuild && (
+              {/* Server Selector */}
+              {selectedGuild && guilds.length > 1 && (
                 <select 
                   value={selectedGuild.id} 
                   onChange={(e) => setSelectedGuild(guilds.find(g => g.id === e.target.value))}
-                  className="bg-white/10 text-white border border-white/20 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-white/10 backdrop-blur-sm text-white border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-lg"
                 >
                   {guilds.map(guild => (
                     <option key={guild.id} value={guild.id} className="bg-gray-800 text-white">
-                      {guild.name}
+                      {guild.name} ({guild.member_count} أعضاء)
                     </option>
                   ))}
                 </select>
@@ -143,27 +190,42 @@ function App() {
         </div>
       </header>
 
+      {/* Error Display */}
+      {error && (
+        <div className="container mx-auto px-6 py-4">
+          <div className="bg-red-500/20 border border-red-500/50 text-red-200 px-6 py-4 rounded-lg backdrop-blur-sm">
+            <div className="flex items-center space-x-3">
+              <span className="text-2xl">⚠️</span>
+              <span>{error}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-6 py-8">
-        {/* Navigation */}
+        {/* Enhanced Navigation */}
         <nav className="mb-8">
-          <div className="flex space-x-1 rtl:space-x-reverse bg-black/20 p-1 rounded-xl">
+          <div className="flex space-x-2 rtl:space-x-reverse bg-black/30 p-2 rounded-2xl backdrop-blur-sm border border-white/10">
             {[
-              { id: 'dashboard', name: 'لوحة القيادة', icon: '📊' },
-              { id: 'settings', name: 'الإعدادات', icon: '⚙️' },
-              { id: 'moderation', name: 'الإشراف', icon: '🛡️' },
-              { id: 'reports', name: 'التقارير', icon: '📈' }
+              { id: 'dashboard', name: 'لوحة القيادة', icon: '📊', desc: 'Dashboard' },
+              { id: 'settings', name: 'الإعدادات', icon: '⚙️', desc: 'Settings' },
+              { id: 'moderation', name: 'الإشراف', icon: '🛡️', desc: 'Moderation' },
+              { id: 'reports', name: 'التقارير', icon: '📈', desc: 'Reports' }
             ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 rtl:space-x-reverse px-6 py-3 rounded-lg font-medium transition-all ${
+                className={`flex items-center space-x-3 rtl:space-x-reverse px-8 py-4 rounded-xl font-medium transition-all duration-200 ${
                   activeTab === tab.id 
-                    ? 'bg-blue-600 text-white shadow-lg' 
-                    : 'text-blue-100 hover:bg-white/10'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xl scale-105' 
+                    : 'text-blue-100 hover:bg-white/10 hover:scale-102'
                 }`}
               >
-                <span>{tab.icon}</span>
-                <span>{tab.name}</span>
+                <span className="text-xl">{tab.icon}</span>
+                <div className="text-left">
+                  <div className="font-bold">{tab.name}</div>
+                  <div className="text-xs opacity-75">{tab.desc}</div>
+                </div>
               </button>
             ))}
           </div>
