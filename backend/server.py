@@ -229,7 +229,7 @@ async def on_message(message):
                 reason="Inappropriate language",
                 moderator_id=str(bot.user.id)
             )
-            await db.strikes.insert_one(strike.dict())
+            await db.strikes.insert_one(strike.dict(by_alias=True, exclude_unset=True))
             
             # Update member strike count
             member_doc = await db.members.find_one({
