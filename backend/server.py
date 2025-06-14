@@ -679,35 +679,17 @@ async def get_guild_stats(guild_id: str):
 @api_router.get("/bot/members/{guild_id}")
 async def get_guild_members(guild_id: str, skip: int = 0, limit: int = 50):
     members = await db.members.find({"guild_id": guild_id}).skip(skip).limit(limit).to_list(length=limit)
-    
-    # Convert ObjectId to string for each member
-    for member in members:
-        if "_id" in member:
-            member["_id"] = str(member["_id"])
-    
-    return members
+    return jsonable_encoder(members)
 
 @api_router.get("/bot/strikes/{guild_id}")
 async def get_guild_strikes(guild_id: str, skip: int = 0, limit: int = 50):
     strikes = await db.strikes.find({"guild_id": guild_id}).sort("timestamp", -1).skip(skip).limit(limit).to_list(length=limit)
-    
-    # Convert ObjectId to string for each strike
-    for strike in strikes:
-        if "_id" in strike:
-            strike["_id"] = str(strike["_id"])
-    
-    return strikes
+    return jsonable_encoder(strikes)
 
 @api_router.get("/bot/actions/{guild_id}")
 async def get_mod_actions(guild_id: str, skip: int = 0, limit: int = 50):
     actions = await db.mod_actions.find({"guild_id": guild_id}).sort("timestamp", -1).skip(skip).limit(limit).to_list(length=limit)
-    
-    # Convert ObjectId to string for each action
-    for action in actions:
-        if "_id" in action:
-            action["_id"] = str(action["_id"])
-    
-    return actions
+    return jsonable_encoder(actions)
 
 # Start Discord Bot in separate thread
 def start_discord_bot():
