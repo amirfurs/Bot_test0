@@ -258,7 +258,5 @@ if __name__ == "__main__":
     
     # Run tests one by one
     for test_case in test_cases:
-        suite.addTest(test_case)
         runner = unittest.TextTestRunner()
-        result = runner.run(suite)
-        suite.empty()  # Clear the suite for the next test
+        runner.run(unittest.TestSuite([test_case]))
