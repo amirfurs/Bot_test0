@@ -63,7 +63,7 @@ api_router = APIRouter(prefix="/api")
 
 # Pydantic Models
 class BotSettings(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
     guild_id: str
     welcome_channel_id: Optional[str] = None
     log_channel_id: Optional[str] = None
