@@ -163,9 +163,17 @@ class DiscordBotBackendTest(unittest.TestCase):
     def test_05_guild_members(self):
         """Test guild members endpoint"""
         if not self.guild_id:
-            self.skipTest("No guild ID available for testing")
+            # Use the first guild from the guilds endpoint
+            response = requests.get(f"{self.base_url}/bot/guilds")
+            guilds = response.json()
+            if guilds:
+                self.guild_id = guilds[0]["id"]
+            else:
+                self.skipTest("No guild ID available for testing")
         
         print("\n=== Testing Guild Members ===")
+        print(f"Using guild ID: {self.guild_id}")
+        
         response = requests.get(f"{self.base_url}/bot/members/{self.guild_id}")
         self.assertEqual(response.status_code, 200, "Members endpoint should return 200")
         
