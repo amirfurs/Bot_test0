@@ -194,15 +194,18 @@ backend:
 
   - task: "MongoDB Database Integration"
     implemented: true
-    working: true
+    working: false
     file: "server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Successfully integrated MongoDB with collections for bot_settings, members, strikes, mod_actions"
+      - working: false
+        agent: "testing"
+        comment: "MongoDB connection is established, but there's an issue with serializing MongoDB ObjectId to JSON. This is causing 500 errors on all database-related API endpoints. The error in logs shows: 'TypeError: ObjectId object is not iterable' and 'TypeError: vars() argument must have __dict__ attribute'"
 
   - task: "REST API Endpoints"
     implemented: true
