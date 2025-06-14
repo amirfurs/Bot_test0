@@ -622,9 +622,13 @@ async def get_bot_settings(guild_id: str):
         # Create default settings if none exist
         default_settings = BotSettings(guild_id=guild_id)
         await db.bot_settings.insert_one(default_settings.dict(by_alias=True))
-        settings = default_settings.dict(by_alias=True)
+        return jsonable_encoder(default_settings.dict(by_alias=True))
     
-    return jsonable_encoder(settings)
+    # Convert ObjectId to string
+    if "_id" in settings and isinstance(settings["_id"], ObjectId):
+        settings["_id"] = str(settings["_id"])
+    
+    return settings
 
 @api_router.put("/bot/settings/{guild_id}")
 async def update_bot_settings(guild_id: str, settings: Dict[str, Any]):
