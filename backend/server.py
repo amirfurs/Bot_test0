@@ -270,7 +270,7 @@ async def on_message(message):
                             duration=60,
                             guild_id=guild_id
                         )
-                        await db.mod_actions.insert_one(mod_action.dict())
+                        await db.mod_actions.insert_one(mod_action.dict(by_alias=True))
                         
                     except discord.Forbidden:
                         print(f"Cannot timeout {message.author}")
