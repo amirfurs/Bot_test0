@@ -62,6 +62,7 @@ api_router = APIRouter(prefix="/api")
 
 # Pydantic Models
 class BotSettings(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     guild_id: str
     welcome_channel_id: Optional[str] = None
     log_channel_id: Optional[str] = None
@@ -77,7 +78,13 @@ class BotSettings(BaseModel):
     forbidden_words: List[str] = ["spam", "toxic", "inappropriate"]
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
 class Member(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     user_id: str
     username: str
     guild_id: str
@@ -86,14 +93,26 @@ class Member(BaseModel):
     total_messages: int = 0
     last_active: datetime = Field(default_factory=datetime.utcnow)
 
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
 class Strike(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     user_id: str
     guild_id: str
     reason: str
     moderator_id: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
 class ModAction(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     action: str  # kick, ban, mute, timeout
     target_id: str
     moderator_id: str
@@ -102,7 +121,13 @@ class ModAction(BaseModel):
     guild_id: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
 class ServerStats(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     guild_id: str
     total_members: int
     new_members_week: int
@@ -111,6 +136,11 @@ class ServerStats(BaseModel):
     messages_today: int
     active_users: int
     timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
 
 # Bot Event Handlers
 @bot.event
