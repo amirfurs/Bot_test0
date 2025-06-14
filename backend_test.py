@@ -84,9 +84,16 @@ class DiscordBotBackendTest(unittest.TestCase):
     def test_03_bot_settings(self):
         """Test bot settings endpoints"""
         if not self.guild_id:
-            self.skipTest("No guild ID available for testing")
+            # Use the first guild from the guilds endpoint
+            response = requests.get(f"{self.base_url}/bot/guilds")
+            guilds = response.json()
+            if guilds:
+                self.guild_id = guilds[0]["id"]
+            else:
+                self.skipTest("No guild ID available for testing")
         
         print("\n=== Testing Bot Settings ===")
+        print(f"Using guild ID: {self.guild_id}")
         
         # Test GET settings
         response = requests.get(f"{self.base_url}/bot/settings/{self.guild_id}")
