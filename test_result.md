@@ -216,7 +216,7 @@ backend:
     file: "server.py"
     stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
@@ -227,6 +227,9 @@ backend:
       - working: true
         agent: "main"
         comment: "Fixed MongoDB ObjectId serialization issue by implementing proper JSON encoding and updating Pydantic models for v2 compatibility. All database operations now use string IDs converted from ObjectId."
+      - working: true
+        agent: "testing"
+        comment: "Fixed MongoDB ObjectId serialization and event loop issues. Created separate MongoDB clients for API endpoints and Discord bot to prevent 'Task got Future attached to a different loop' errors. All database-related endpoints are now working correctly."
 
   - task: "REST API Endpoints"
     implemented: true
