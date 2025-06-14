@@ -237,9 +237,17 @@ class DiscordBotBackendTest(unittest.TestCase):
     def test_07_mod_actions(self):
         """Test moderation actions endpoint"""
         if not self.guild_id:
-            self.skipTest("No guild ID available for testing")
+            # Use the first guild from the guilds endpoint
+            response = requests.get(f"{self.base_url}/bot/guilds")
+            guilds = response.json()
+            if guilds:
+                self.guild_id = guilds[0]["id"]
+            else:
+                self.skipTest("No guild ID available for testing")
         
         print("\n=== Testing Moderation Actions ===")
+        print(f"Using guild ID: {self.guild_id}")
+        
         response = requests.get(f"{self.base_url}/bot/actions/{self.guild_id}")
         self.assertEqual(response.status_code, 200, "Actions endpoint should return 200")
         
