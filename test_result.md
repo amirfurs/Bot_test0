@@ -309,13 +309,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Discord Bot Integration"
     - "REST API Endpoints"
     - "MongoDB Database Integration"
-    - "Dashboard UI"
-    - "Statistics Display"
-    - "Settings Management"
-  stuck_tasks: []
+  stuck_tasks:
+    - "REST API Endpoints"
+    - "MongoDB Database Integration"
   test_all: false
   test_priority: "high_first"
 
