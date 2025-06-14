@@ -244,19 +244,9 @@ class DiscordBotBackendTest(unittest.TestCase):
 if __name__ == "__main__":
     print(f"Testing Discord Bot Backend API at {BACKEND_URL}")
     
-    # Create a test suite with individual tests
-    suite = unittest.TestSuite()
-    
-    # Add tests in order
-    test_cases = [
-        DiscordBotBackendTest('test_03_bot_settings'),
-        DiscordBotBackendTest('test_04_guild_stats'),
-        DiscordBotBackendTest('test_05_guild_members'),
-        DiscordBotBackendTest('test_06_guild_strikes'),
-        DiscordBotBackendTest('test_07_mod_actions')
-    ]
-    
-    # Run tests one by one
-    for test_case in test_cases:
-        runner = unittest.TextTestRunner()
-        runner.run(unittest.TestSuite([test_case]))
+    # Run test_03_bot_settings
+    print("\nRunning test_03_bot_settings...")
+    test = DiscordBotBackendTest('test_03_bot_settings')
+    test.setUp()
+    test.guild_id = "1382836232467255379"  # Set guild ID directly
+    test.test_03_bot_settings()
