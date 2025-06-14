@@ -621,11 +621,11 @@ async def get_bot_guilds():
 
 @api_router.get("/bot/settings/{guild_id}")
 async def get_bot_settings(guild_id: str):
-    settings = await db.bot_settings.find_one({"guild_id": guild_id})
+    settings = await api_db.bot_settings.find_one({"guild_id": guild_id})
     if not settings:
         # Create default settings if none exist
         default_settings = BotSettings(guild_id=guild_id)
-        await db.bot_settings.insert_one(default_settings.dict(by_alias=True))
+        await api_db.bot_settings.insert_one(default_settings.dict(by_alias=True))
         return jsonable_encoder(default_settings.dict(by_alias=True))
     
     # Convert ObjectId to string
@@ -636,7 +636,7 @@ async def get_bot_settings(guild_id: str):
 
 @api_router.put("/bot/settings/{guild_id}")
 async def update_bot_settings(guild_id: str, settings: Dict[str, Any]):
-    result = await db.bot_settings.update_one(
+    result = await api_db.bot_settings.update_one(
         {"guild_id": guild_id},
         {"$set": settings},
         upsert=True
@@ -651,13 +651,13 @@ async def update_bot_settings(guild_id: str, settings: Dict[str, Any]):
 async def get_guild_stats(guild_id: str):
     week_ago = datetime.utcnow() - timedelta(days=7)
     
-    total_members = await db.members.count_documents({"guild_id": guild_id})
-    new_members = await db.members.count_documents({
+    total_members = await api_db.members.count_documents({"guild_id": guild_id})
+    new_members = await api_db.members.count_documents({
         "guild_id": guild_id,
         "join_date": {"$gte": week_ago}
     })
-    total_strikes = await db.strikes.count_documents({"guild_id": guild_id})
-    mod_actions = await db.mod_actions.count_documents({
+    total_strikes = await api_db.strikes.count_documents({"guild_id": guild_id})
+    mod_actions = await api_db.mod_actions.count_documents({
         "guild_id": guild_id,
         "timestamp": {"$gte": week_ago}
     })
@@ -672,17 +672,17 @@ async def get_guild_stats(guild_id: str):
 
 @api_router.get("/bot/members/{guild_id}")
 async def get_guild_members(guild_id: str, skip: int = 0, limit: int = 50):
-    members = await db.members.find({"guild_id": guild_id}).skip(skip).limit(limit).to_list(length=limit)
+    members = await api_db.members.find({"guild_id": guild_id}).skip(skip).limit(limit).to_list(length=limit)
     return jsonable_encoder(members)
 
 @api_router.get("/bot/strikes/{guild_id}")
 async def get_guild_strikes(guild_id: str, skip: int = 0, limit: int = 50):
-    strikes = await db.strikes.find({"guild_id": guild_id}).sort("timestamp", -1).skip(skip).limit(limit).to_list(length=limit)
+    strikes = await api_db.strikes.find({"guild_id": guild_id}).sort("timestamp", -1).skip(skip).limit(limit).to_list(length=limit)
     return jsonable_encoder(strikes)
 
 @api_router.get("/bot/actions/{guild_id}")
 async def get_mod_actions(guild_id: str, skip: int = 0, limit: int = 50):
-    actions = await db.mod_actions.find({"guild_id": guild_id}).sort("timestamp", -1).skip(skip).limit(limit).to_list(length=limit)
+    actions = await api_db.mod_actions.find({"guild_id": guild_id}).sort("timestamp", -1).skip(skip).limit(limit).to_list(length=limit)
     return jsonable_encoder(actions)
 
 # Start Discord Bot in separate thread
