@@ -113,7 +113,7 @@ class Strike(BaseModel):
         json_encoders = {ObjectId: str}
 
 class ModAction(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
     action: str  # kick, ban, mute, timeout
     target_id: str
     moderator_id: str
