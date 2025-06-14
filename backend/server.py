@@ -43,26 +43,8 @@ app = FastAPI()
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
-# MongoDB ObjectId handling for JSON serialization
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v, validation_info=None):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
-        return ObjectId(v)
-
-    @classmethod
-    def __get_pydantic_json_schema__(cls, field_schema):
-        field_schema.update(type="string")
-        return field_schema
-
 # Pydantic Models
 class BotSettings(BaseModel):
-    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
     guild_id: str
     welcome_channel_id: Optional[str] = None
     log_channel_id: Optional[str] = None
@@ -78,13 +60,7 @@ class BotSettings(BaseModel):
     forbidden_words: List[str] = ["spam", "toxic", "inappropriate"]
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
 class Member(BaseModel):
-    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
     user_id: str
     username: str
     guild_id: str
@@ -93,26 +69,14 @@ class Member(BaseModel):
     total_messages: int = 0
     last_active: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
 class Strike(BaseModel):
-    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
     user_id: str
     guild_id: str
     reason: str
     moderator_id: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
 class ModAction(BaseModel):
-    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
     action: str  # kick, ban, mute, timeout
     target_id: str
     moderator_id: str
@@ -120,11 +84,6 @@ class ModAction(BaseModel):
     duration: Optional[int] = None  # minutes for timeout/mute
     guild_id: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
-
-    class Config:
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
 
 class ServerStats(BaseModel):
     guild_id: str
