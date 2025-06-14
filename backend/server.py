@@ -151,7 +151,7 @@ async def on_ready():
         existing_settings = await db.bot_settings.find_one({"guild_id": str(guild.id)})
         if not existing_settings:
             settings = BotSettings(guild_id=str(guild.id))
-            await db.bot_settings.insert_one(settings.dict())
+            await db.bot_settings.insert_one(settings.dict(by_alias=True, exclude_unset=True))
 
 @bot.event
 async def on_member_join(member):
