@@ -85,7 +85,7 @@ class BotSettings(BaseModel):
         json_encoders = {ObjectId: str}
 
 class Member(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
     user_id: str
     username: str
     guild_id: str
