@@ -244,9 +244,18 @@ class DiscordBotBackendTest(unittest.TestCase):
 if __name__ == "__main__":
     print(f"Testing Discord Bot Backend API at {BACKEND_URL}")
     
-    # Run test_03_bot_settings
-    print("\nRunning test_03_bot_settings...")
-    test = DiscordBotBackendTest('test_03_bot_settings')
+    # Run test_01_bot_status and test_02_bot_guilds
+    print("\nRunning test_01_bot_status...")
+    test = DiscordBotBackendTest('test_01_bot_status')
     test.setUp()
-    test.guild_id = "1382836232467255379"  # Set guild ID directly
-    test.test_03_bot_settings()
+    test.test_01_bot_status()
+    
+    print("\nRunning test_02_bot_guilds...")
+    test = DiscordBotBackendTest('test_02_bot_guilds')
+    test.setUp()
+    test.test_02_bot_guilds()
+    
+    print("\nRunning test_08_error_handling...")
+    test = DiscordBotBackendTest('test_08_error_handling')
+    test.setUp()
+    test.test_08_error_handling()
