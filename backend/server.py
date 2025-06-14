@@ -175,7 +175,7 @@ async def on_member_join(member):
         guild_id=guild_id,
         join_date=datetime.utcnow()
     )
-    await db.members.insert_one(member_data.dict())
+    await db.members.insert_one(member_data.dict(by_alias=True))
     
     # Send welcome message
     welcome_channel_id = settings.get('welcome_channel_id')
