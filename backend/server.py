@@ -709,8 +709,8 @@ async def get_mod_actions(guild_id: str, skip: int = 0, limit: int = 50):
 
 # Start Discord Bot in separate thread
 def start_discord_bot():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    loop = asyncio.get_event_loop()
     
     if DISCORD_TOKEN:
         try:
@@ -720,10 +720,17 @@ def start_discord_bot():
     else:
         print("Discord token not provided")
 
-# Start bot in background
-if DISCORD_TOKEN:
-    bot_thread = threading.Thread(target=start_discord_bot, daemon=True)
-    bot_thread.start()
+# Discord bot startup
+discord_bot_task = None
+
+@app.on_event("startup")
+async def startup_event():
+    global discord_bot_task
+    if DISCORD_TOKEN and not discord_bot_task:
+        # Start bot in background
+        bot_thread = threading.Thread(target=start_discord_bot, daemon=True)
+        bot_thread.start()
+        print("Discord bot started in background thread")
 
 # Include the router in the main app
 app.include_router(api_router)
