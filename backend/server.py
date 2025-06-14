@@ -588,8 +588,8 @@ async def get_bot_settings(guild_id: str):
     if not settings:
         # Create default settings if none exist
         default_settings = BotSettings(guild_id=guild_id)
-        await db.bot_settings.insert_one(default_settings.dict(by_alias=True, exclude_unset=True))
-        settings = default_settings.dict(by_alias=True, exclude_unset=True)
+        await db.bot_settings.insert_one(default_settings.dict())
+        settings = default_settings.dict()
     
     # Convert ObjectId to string for JSON serialization
     if "_id" in settings:
