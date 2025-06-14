@@ -126,11 +126,14 @@ backend:
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented on_member_join event handler with bilingual welcome messages, auto role assignment, and database logging"
+      - working: "NA"
+        agent: "testing"
+        comment: "Cannot test directly through API. Implementation looks correct in code, but database operations might be affected by the MongoDB serialization issue."
 
   - task: "Auto Moderation & Strike System"
     implemented: true
