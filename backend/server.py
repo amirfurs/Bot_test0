@@ -330,7 +330,7 @@ async def mute_member(ctx, member: discord.Member, duration: int = 60, *, reason
             duration=duration,
             guild_id=str(ctx.guild.id)
         )
-        await db.mod_actions.insert_one(mod_action.dict())
+        await db.mod_actions.insert_one(mod_action.dict(by_alias=True, exclude_unset=True))
         
     except discord.Forbidden:
         await ctx.send("❌ ليس لدي صلاحية لكتم هذا العضو / I don't have permission to mute this member")
