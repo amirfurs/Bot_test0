@@ -321,4 +321,41 @@ agent_communication:
   - agent: "main"
     message: "Successfully implemented complete Discord bot 'المنظِّم الذكي – SmartModerator' with all requested features. Bot is connected and running (online status, 9 guilds, 13 users). Backend includes full Discord API integration, database models, and REST API. Frontend has comprehensive bilingual dashboard. Ready for comprehensive testing."
   - agent: "testing"
-    message: "Completed backend testing. Discord bot is online and connected to 9 guilds with 13 users. Basic API endpoints (/api/bot/status and /api/bot/guilds) are working correctly. However, all database-related endpoints are returning 500 Internal Server Error due to MongoDB ObjectId serialization issues. The error in logs shows: 'TypeError: ObjectId object is not iterable' and 'TypeError: vars() argument must have __dict__ attribute'. This needs to be fixed before the database-related endpoints can be used."
+    message: "Completed backend testing. Discord bot is online and connected to 9 guilds with 13 users. Basic API endpoints (/api/bot/status and /api/bot/guilds) are working correctly. However, all database-related endpoints are returning 500 Internal Server Error due to MongoDB ObjectId serialization issues. The error in logs shows: 'TypeError: ObjectId object is not iterable' and 'TypeError: vars() argument must have __dict__ attribute'. This needs to be fixed before the database-related endpoints can be used. 
+    
+    SOLUTION: To fix the MongoDB ObjectId serialization issue, you need to:
+    1. Create a custom PyObjectId class that handles serialization
+    2. Update your Pydantic models to use this class
+    3. Configure the models to properly serialize ObjectId to string
+    
+    Example implementation:
+    ```python
+    from bson import ObjectId
+    
+    class PyObjectId(ObjectId):
+        @classmethod
+        def __get_validators__(cls):
+            yield cls.validate
+    
+        @classmethod
+        def validate(cls, v):
+            if not ObjectId.is_valid(v):
+                raise ValueError('Invalid ObjectId')
+            return ObjectId(v)
+    
+        @classmethod
+        def __modify_schema__(cls, field_schema):
+            field_schema.update(type='string')
+    
+    # Then update your Pydantic models:
+    class YourModel(BaseModel):
+        id: PyObjectId = Field(default_factory=PyObjectId, alias='_id')
+        # other fields...
+    
+        class Config:
+            allow_population_by_field_name = True
+            arbitrary_types_allowed = True
+            json_encoders = {
+                ObjectId: str
+            }
+    ```"
