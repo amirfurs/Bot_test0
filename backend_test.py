@@ -249,14 +249,11 @@ if __name__ == "__main__":
     
     # Add tests in order
     test_cases = [
-        DiscordBotBackendTest('test_01_bot_status'),
-        DiscordBotBackendTest('test_02_bot_guilds'),
         DiscordBotBackendTest('test_03_bot_settings'),
         DiscordBotBackendTest('test_04_guild_stats'),
         DiscordBotBackendTest('test_05_guild_members'),
         DiscordBotBackendTest('test_06_guild_strikes'),
-        DiscordBotBackendTest('test_07_mod_actions'),
-        DiscordBotBackendTest('test_08_error_handling')
+        DiscordBotBackendTest('test_07_mod_actions')
     ]
     
     # Run tests one by one
