@@ -414,153 +414,181 @@ function App() {
         )}
 
         {activeTab === 'settings' && settings && (
-          <div className="space-y-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-              <h3 className="text-xl font-bold text-white mb-6">⚙️ إعدادات البوت</h3>
+          <div className="space-y-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 shadow-2xl">
+              <div className="flex items-center space-x-4 mb-8">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                  <span className="text-3xl">⚙️</span>
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-white">إعدادات البوت</h3>
+                  <p className="text-purple-200">Bot Configuration</p>
+                </div>
+              </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-blue-200 text-sm font-bold mb-3">
+                      🎉 قناة الترحيب / Welcome Channel ID
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.welcome_channel_id || ''}
+                      onChange={(e) => setSettings({...settings, welcome_channel_id: e.target.value})}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-sm text-lg"
+                      placeholder="123456789012345678"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-blue-200 text-sm font-bold mb-3">
+                      📝 قناة السجلات / Log Channel ID
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.log_channel_id || ''}
+                      onChange={(e) => setSettings({...settings, log_channel_id: e.target.value})}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-sm text-lg"
+                      placeholder="123456789012345678"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-blue-200 text-sm font-bold mb-3">
+                      🏷️ الرتبة الافتراضية / Default Role
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.default_role_name || 'Member'}
+                      onChange={(e) => setSettings({...settings, default_role_name: e.target.value})}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-sm text-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-blue-200 text-sm font-bold mb-3">
+                      ⚠️ حد الإنذارات / Strike Limit
+                    </label>
+                    <input
+                      type="number"
+                      value={settings.strike_limit || 3}
+                      onChange={(e) => setSettings({...settings, strike_limit: parseInt(e.target.value)})}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-sm text-lg"
+                      min="1"
+                      max="10"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-blue-200 text-sm font-bold mb-3">
+                      🌙 بداية ساعات الهدوء / Quiet Hours Start
+                    </label>
+                    <input
+                      type="time"
+                      value={settings.quiet_start || '22:00'}
+                      onChange={(e) => setSettings({...settings, quiet_start: e.target.value})}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-sm text-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-blue-200 text-sm font-bold mb-3">
+                      ☀️ نهاية ساعات الهدوء / Quiet Hours End
+                    </label>
+                    <input
+                      type="time"
+                      value={settings.quiet_end || '08:00'}
+                      onChange={(e) => setSettings({...settings, quiet_end: e.target.value})}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-sm text-lg"
+                    />
+                  </div>
+
+                  {/* Toggle Settings */}
+                  <div className="bg-white/5 rounded-xl p-6 space-y-4">
+                    <h4 className="text-white font-bold text-lg mb-4">إعدادات التفعيل / Activation Settings</h4>
+                    
+                    <label className="flex items-center justify-between p-4 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-all">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-2xl">🎭</span>
+                        <span className="text-white font-medium">تفعيل الأدوار التلقائية</span>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={settings.auto_role_enabled}
+                        onChange={(e) => setSettings({...settings, auto_role_enabled: e.target.checked})}
+                        className="w-6 h-6 text-purple-600 bg-white/10 border-white/20 rounded focus:ring-purple-500"
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between p-4 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-all">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-2xl">🌙</span>
+                        <span className="text-white font-medium">تفعيل ساعات الهدوء</span>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={settings.quiet_hours_enabled}
+                        onChange={(e) => setSettings({...settings, quiet_hours_enabled: e.target.checked})}
+                        className="w-6 h-6 text-purple-600 bg-white/10 border-white/20 rounded focus:ring-purple-500"
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between p-4 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-all">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-2xl">🔇</span>
+                        <span className="text-white font-medium">الكتم التلقائي</span>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={settings.auto_timeout_enabled}
+                        onChange={(e) => setSettings({...settings, auto_timeout_enabled: e.target.checked})}
+                        className="w-6 h-6 text-purple-600 bg-white/10 border-white/20 rounded focus:ring-purple-500"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Welcome Messages */}
+              <div className="mt-8 space-y-6">
                 <div>
-                  <label className="block text-blue-200 text-sm font-medium mb-2">
-                    قناة الترحيب / Welcome Channel ID
+                  <label className="block text-blue-200 text-sm font-bold mb-3">
+                    🇸🇦 رسالة الترحيب (عربي) / Welcome Message (Arabic)
                   </label>
-                  <input
-                    type="text"
-                    value={settings.welcome_channel_id || ''}
-                    onChange={(e) => setSettings({...settings, welcome_channel_id: e.target.value})}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="123456789012345678"
+                  <textarea
+                    value={settings.welcome_message_ar || ''}
+                    onChange={(e) => setSettings({...settings, welcome_message_ar: e.target.value})}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-sm text-lg"
+                    rows="4"
+                    placeholder="مرحباً {mention}! أهلاً وسهلاً بك في خادمنا 🎉"
+                    dir="rtl"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-blue-200 text-sm font-medium mb-2">
-                    قناة السجلات / Log Channel ID
+                  <label className="block text-blue-200 text-sm font-bold mb-3">
+                    🇺🇸 رسالة الترحيب (إنجليزي) / Welcome Message (English)
                   </label>
-                  <input
-                    type="text"
-                    value={settings.log_channel_id || ''}
-                    onChange={(e) => setSettings({...settings, log_channel_id: e.target.value})}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="123456789012345678"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-blue-200 text-sm font-medium mb-2">
-                    الرتبة الافتراضية / Default Role
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.default_role_name || 'Member'}
-                    onChange={(e) => setSettings({...settings, default_role_name: e.target.value})}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-blue-200 text-sm font-medium mb-2">
-                    حد الإنذارات / Strike Limit
-                  </label>
-                  <input
-                    type="number"
-                    value={settings.strike_limit || 3}
-                    onChange={(e) => setSettings({...settings, strike_limit: parseInt(e.target.value)})}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    min="1"
-                    max="10"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-blue-200 text-sm font-medium mb-2">
-                    بداية ساعات الهدوء / Quiet Hours Start
-                  </label>
-                  <input
-                    type="time"
-                    value={settings.quiet_start || '22:00'}
-                    onChange={(e) => setSettings({...settings, quiet_start: e.target.value})}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-blue-200 text-sm font-medium mb-2">
-                    نهاية ساعات الهدوء / Quiet Hours End
-                  </label>
-                  <input
-                    type="time"
-                    value={settings.quiet_end || '08:00'}
-                    onChange={(e) => setSettings({...settings, quiet_end: e.target.value})}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  <textarea
+                    value={settings.welcome_message_en || ''}
+                    onChange={(e) => setSettings({...settings, welcome_message_en: e.target.value})}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent backdrop-blur-sm text-lg"
+                    rows="4"
+                    placeholder="Welcome {mention}! We're glad to have you here 🎉"
                   />
                 </div>
               </div>
 
-              <div className="mt-6">
-                <label className="block text-blue-200 text-sm font-medium mb-2">
-                  رسالة الترحيب (عربي) / Welcome Message (Arabic)
-                </label>
-                <textarea
-                  value={settings.welcome_message_ar || ''}
-                  onChange={(e) => setSettings({...settings, welcome_message_ar: e.target.value})}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows="3"
-                  placeholder="مرحباً {mention}! أهلاً وسهلاً بك في خادمنا 🎉"
-                  dir="rtl"
-                />
-              </div>
-
-              <div className="mt-4">
-                <label className="block text-blue-200 text-sm font-medium mb-2">
-                  رسالة الترحيب (إنجليزي) / Welcome Message (English)
-                </label>
-                <textarea
-                  value={settings.welcome_message_en || ''}
-                  onChange={(e) => setSettings({...settings, welcome_message_en: e.target.value})}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows="3"
-                  placeholder="Welcome {mention}! We're glad to have you here 🎉"
-                />
-              </div>
-
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <label className="flex items-center space-x-3 rtl:space-x-reverse">
-                  <input
-                    type="checkbox"
-                    checked={settings.auto_role_enabled}
-                    onChange={(e) => setSettings({...settings, auto_role_enabled: e.target.checked})}
-                    className="w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500"
-                  />
-                  <span className="text-blue-200 text-sm">تفعيل الأدوار التلقائية</span>
-                </label>
-
-                <label className="flex items-center space-x-3 rtl:space-x-reverse">
-                  <input
-                    type="checkbox"
-                    checked={settings.quiet_hours_enabled}
-                    onChange={(e) => setSettings({...settings, quiet_hours_enabled: e.target.checked})}
-                    className="w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500"
-                  />
-                  <span className="text-blue-200 text-sm">تفعيل ساعات الهدوء</span>
-                </label>
-
-                <label className="flex items-center space-x-3 rtl:space-x-reverse">
-                  <input
-                    type="checkbox"
-                    checked={settings.auto_timeout_enabled}
-                    onChange={(e) => setSettings({...settings, auto_timeout_enabled: e.target.checked})}
-                    className="w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500"
-                  />
-                  <span className="text-blue-200 text-sm">الكتم التلقائي</span>
-                </label>
-              </div>
-
-              <div className="mt-6">
+              <div className="mt-8 flex justify-center">
                 <button
                   onClick={() => updateSettings(settings)}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-12 py-4 rounded-xl text-lg shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center space-x-3"
                 >
-                  💾 حفظ الإعدادات / Save Settings
+                  <span className="text-2xl">💾</span>
+                  <span>حفظ الإعدادات / Save Settings</span>
                 </button>
               </div>
             </div>
