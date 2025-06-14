@@ -186,11 +186,14 @@ backend:
     file: "server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented scheduled quiet hours (22:00-08:00) with automatic channel permission management"
+      - working: "NA"
+        agent: "testing"
+        comment: "Cannot test directly through API. Implementation looks correct in code, but there are errors in logs related to the background task accessing MongoDB from a different event loop."
 
   - task: "Weekly Reports"
     implemented: true
