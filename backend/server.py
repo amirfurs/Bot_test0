@@ -128,7 +128,7 @@ class ModAction(BaseModel):
         json_encoders = {ObjectId: str}
 
 class ServerStats(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
     guild_id: str
     total_members: int
     new_members_week: int
