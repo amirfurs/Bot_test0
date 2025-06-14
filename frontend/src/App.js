@@ -596,54 +596,113 @@ function App() {
         )}
 
         {activeTab === 'moderation' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <h3 className="text-xl font-bold text-white mb-4">⚠️ الإنذارات الأخيرة</h3>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {strikes.map((strike, index) => (
-                    <div key={index} className="p-4 bg-white/5 rounded-lg border-l-4 border-yellow-500">
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 shadow-2xl">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-white flex items-center space-x-3">
+                    <span className="text-3xl">⚠️</span>
+                    <span>سجل الإنذارات</span>
+                  </h3>
+                  <div className="bg-yellow-500/20 text-yellow-400 px-4 py-2 rounded-full text-sm font-medium">
+                    {strikes.length} إنذار إجمالي
+                  </div>
+                </div>
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {strikes.length > 0 ? strikes.map((strike, index) => (
+                    <div key={index} className="p-6 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl border-l-4 border-yellow-500 hover:shadow-lg transition-all duration-200">
                       <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-white font-medium">User ID: {strike.user_id}</p>
-                          <p className="text-yellow-200 text-sm mt-1">{strike.reason}</p>
-                          <p className="text-gray-400 text-xs mt-2">
-                            Moderator: {strike.moderator_id}
-                          </p>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <span className="text-2xl">👤</span>
+                            <p className="text-white font-bold text-lg">User ID: {strike.user_id}</p>
+                          </div>
+                          <div className="bg-yellow-500/20 rounded-lg p-4 mb-3">
+                            <p className="text-yellow-200 font-medium">{strike.reason}</p>
+                          </div>
+                          <div className="flex items-center space-x-4 text-sm">
+                            <p className="text-gray-400 flex items-center space-x-2">
+                              <span>👮</span>
+                              <span>مشرف: {strike.moderator_id}</span>
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right ml-4">
+                          <div className="bg-yellow-500/20 text-yellow-300 px-3 py-1 rounded-full text-xs font-bold mb-2">
+                            STRIKE
+                          </div>
                           <p className="text-xs text-gray-300">{formatDate(strike.timestamp)}</p>
                         </div>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="text-center py-16">
+                      <span className="text-8xl mb-4 block">✅</span>
+                      <p className="text-gray-300 text-xl font-bold mb-2">لا توجد إنذارات</p>
+                      <p className="text-gray-400">No strikes recorded</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <h3 className="text-xl font-bold text-white mb-4">🛡️ إجراءات الإشراف</h3>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {modActions.map((action, index) => (
-                    <div key={index} className="p-4 bg-white/5 rounded-lg border-l-4 border-red-500">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 shadow-2xl">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-white flex items-center space-x-3">
+                    <span className="text-3xl">🛡️</span>
+                    <span>سجل الإجراءات</span>
+                  </h3>
+                  <div className="bg-red-500/20 text-red-400 px-4 py-2 rounded-full text-sm font-medium">
+                    {modActions.length} إجراء إجمالي
+                  </div>
+                </div>
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {modActions.length > 0 ? modActions.map((action, index) => (
+                    <div key={index} className="p-6 bg-gradient-to-r from-red-500/10 to-pink-500/10 rounded-xl border-l-4 border-red-500 hover:shadow-lg transition-all duration-200">
                       <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-white font-medium capitalize">{action.action}</p>
-                          <p className="text-red-200 text-sm mt-1">{action.reason}</p>
-                          <p className="text-gray-400 text-xs mt-2">
-                            Target: {action.target_id} | Moderator: {action.moderator_id}
-                          </p>
-                          {action.duration && (
-                            <p className="text-blue-200 text-xs mt-1">
-                              Duration: {action.duration} minutes
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <span className="text-2xl">
+                              {action.action === 'kick' ? '👢' : 
+                               action.action === 'timeout' ? '🔇' : 
+                               action.action === 'purge' ? '🗑️' : '⚡'}
+                            </span>
+                            <p className="text-white font-bold text-lg capitalize">{action.action}</p>
+                          </div>
+                          <div className="bg-red-500/20 rounded-lg p-4 mb-3">
+                            <p className="text-red-200 font-medium">{action.reason}</p>
+                          </div>
+                          <div className="space-y-2 text-sm">
+                            <p className="text-gray-400 flex items-center space-x-2">
+                              <span>🎯</span>
+                              <span>الهدف: {action.target_id}</span>
                             </p>
-                          )}
+                            <p className="text-gray-400 flex items-center space-x-2">
+                              <span>👮</span>
+                              <span>مشرف: {action.moderator_id}</span>
+                            </p>
+                            {action.duration && (
+                              <p className="text-blue-200 flex items-center space-x-2">
+                                <span>⏰</span>
+                                <span>المدة: {action.duration} دقيقة</span>
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right ml-4">
+                          <div className="bg-red-500/20 text-red-300 px-3 py-1 rounded-full text-xs font-bold mb-2">
+                            ACTION
+                          </div>
                           <p className="text-xs text-gray-300">{formatDate(action.timestamp)}</p>
                         </div>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="text-center py-16">
+                      <span className="text-8xl mb-4 block">🛡️</span>
+                      <p className="text-gray-300 text-xl font-bold mb-2">لا توجد إجراءات</p>
+                      <p className="text-gray-400">No actions recorded</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -651,58 +710,113 @@ function App() {
         )}
 
         {activeTab === 'reports' && (
-          <div className="space-y-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-              <h3 className="text-xl font-bold text-white mb-4">📈 تقارير الأداء</h3>
-              <p className="text-blue-200 mb-4">استخدم الأوامر التالية في الديسكورد:</p>
+          <div className="space-y-8">
+            {/* Commands Reference */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 shadow-2xl">
+              <div className="flex items-center space-x-4 mb-8">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-3xl">📋</span>
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-white">دليل الأوامر</h3>
+                  <p className="text-green-200">استخدم هذه الأوامر في الديسكورد</p>
+                </div>
+              </div>
               
-              <div className="space-y-3">
-                <div className="p-4 bg-white/5 rounded-lg">
-                  <code className="text-green-400">!الإحصائيات</code>
-                  <p className="text-gray-300 text-sm mt-2">عرض إحصائيات الخادم الحالية</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h4 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
+                    <span>👑</span>
+                    <span>أوامر الإدارة</span>
+                  </h4>
+                  
+                  <div className="p-6 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl border border-green-400/30">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <span className="text-2xl">📊</span>
+                      <code className="text-green-400 font-bold text-lg">!الإحصائيات</code>
+                    </div>
+                    <p className="text-gray-300">عرض إحصائيات الخادم الحالية</p>
+                    <p className="text-gray-400 text-sm mt-1">Display current server statistics</p>
+                  </div>
+                  
+                  <div className="p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl border border-purple-400/30">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <span className="text-2xl">🎭</span>
+                      <code className="text-purple-400 font-bold text-lg">!الأدوار</code>
+                    </div>
+                    <p className="text-gray-300">عرض قائمة اختيار الأدوار التفاعلية</p>
+                    <p className="text-gray-400 text-sm mt-1">Show interactive role selection menu</p>
+                  </div>
                 </div>
-                
-                <div className="p-4 bg-white/5 rounded-lg">
-                  <code className="text-green-400">!الأدوار</code>
-                  <p className="text-gray-300 text-sm mt-2">عرض قائمة اختيار الأدوار التفاعلية</p>
-                </div>
-                
-                <div className="p-4 bg-white/5 rounded-lg">
-                  <code className="text-green-400">!مسح [العدد]</code>
-                  <p className="text-gray-300 text-sm mt-2">حذف عدد معين من الرسائل</p>
-                </div>
-                
-                <div className="p-4 bg-white/5 rounded-lg">
-                  <code className="text-green-400">!كتم @المستخدم [المدة بالدقائق]</code>
-                  <p className="text-gray-300 text-sm mt-2">كتم مستخدم لفترة محددة</p>
-                </div>
-                
-                <div className="p-4 bg-white/5 rounded-lg">
-                  <code className="text-green-400">!طرد @المستخدم [السبب]</code>
-                  <p className="text-gray-300 text-sm mt-2">طرد مستخدم من الخادم</p>
+
+                <div className="space-y-4">
+                  <h4 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
+                    <span>🛡️</span>
+                    <span>أوامر الإشراف</span>
+                  </h4>
+                  
+                  <div className="p-6 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl border border-red-400/30">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <span className="text-2xl">🗑️</span>
+                      <code className="text-red-400 font-bold text-lg">!مسح [العدد]</code>
+                    </div>
+                    <p className="text-gray-300">حذف عدد معين من الرسائل</p>
+                    <p className="text-gray-400 text-sm mt-1">Delete specific number of messages</p>
+                  </div>
+                  
+                  <div className="p-6 bg-gradient-to-r from-yellow-500/10 to-red-500/10 rounded-xl border border-yellow-400/30">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <span className="text-2xl">🔇</span>
+                      <code className="text-yellow-400 font-bold text-lg">!كتم @المستخدم [المدة]</code>
+                    </div>
+                    <p className="text-gray-300">كتم مستخدم لفترة محددة بالدقائق</p>
+                    <p className="text-gray-400 text-sm mt-1">Mute user for specified minutes</p>
+                  </div>
+                  
+                  <div className="p-6 bg-gradient-to-r from-red-500/10 to-pink-500/10 rounded-xl border border-red-400/30">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <span className="text-2xl">👢</span>
+                      <code className="text-red-400 font-bold text-lg">!طرد @المستخدم [السبب]</code>
+                    </div>
+                    <p className="text-gray-300">طرد مستخدم من الخادم</p>
+                    <p className="text-gray-400 text-sm mt-1">Kick user from server</p>
+                  </div>
                 </div>
               </div>
             </div>
 
+            {/* Statistics Summary */}
             {guildStats && (
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <h3 className="text-xl font-bold text-white mb-4">📊 ملخص الإحصائيات</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-400">{guildStats.total_members}</div>
-                    <div className="text-sm text-gray-300">إجمالي الأعضاء</div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 shadow-2xl">
+                <div className="flex items-center space-x-4 mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                    <span className="text-3xl">📈</span>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-green-400">{guildStats.new_members_week}</div>
-                    <div className="text-sm text-gray-300">أعضاء جدد</div>
+                  <div>
+                    <h3 className="text-3xl font-bold text-white">ملخص الإحصائيات</h3>
+                    <p className="text-blue-200">Statistics Overview</p>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-yellow-400">{guildStats.total_strikes}</div>
-                    <div className="text-sm text-gray-300">إجمالي الإنذارات</div>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div className="text-center p-6 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl border border-blue-400/30">
+                    <div className="text-5xl font-bold text-blue-400 mb-2">{guildStats.total_members}</div>
+                    <div className="text-blue-200 font-medium">إجمالي الأعضاء</div>
+                    <div className="text-xs text-gray-400 mt-1">Total Members</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-red-400">{guildStats.mod_actions_week}</div>
-                    <div className="text-sm text-gray-300">إجراءات الإشراف</div>
+                  <div className="text-center p-6 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl border border-green-400/30">
+                    <div className="text-5xl font-bold text-green-400 mb-2">{guildStats.new_members_week}</div>
+                    <div className="text-green-200 font-medium">أعضاء جدد</div>
+                    <div className="text-xs text-gray-400 mt-1">New Members</div>
+                  </div>
+                  <div className="text-center p-6 bg-gradient-to-br from-yellow-500/20 to-orange-600/20 rounded-xl border border-yellow-400/30">
+                    <div className="text-5xl font-bold text-yellow-400 mb-2">{guildStats.total_strikes}</div>
+                    <div className="text-yellow-200 font-medium">إجمالي الإنذارات</div>
+                    <div className="text-xs text-gray-400 mt-1">Total Strikes</div>
+                  </div>
+                  <div className="text-center p-6 bg-gradient-to-br from-red-500/20 to-pink-600/20 rounded-xl border border-red-400/30">
+                    <div className="text-5xl font-bold text-red-400 mb-2">{guildStats.mod_actions_week}</div>
+                    <div className="text-red-200 font-medium">إجراءات الإشراف</div>
+                    <div className="text-xs text-gray-400 mt-1">Mod Actions</div>
                   </div>
                 </div>
               </div>
