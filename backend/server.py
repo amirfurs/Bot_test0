@@ -260,7 +260,7 @@ async def kick_member(ctx, member: discord.Member, *, reason="لا يوجد سب
             reason=reason,
             guild_id=str(ctx.guild.id)
         )
-        await db.mod_actions.insert_one(mod_action.dict(by_alias=True, exclude_unset=True))
+        await db.mod_actions.insert_one(mod_action.dict())
         
     except discord.Forbidden:
         await ctx.send("❌ ليس لدي صلاحية لطرد هذا العضو / I don't have permission to kick this member")
