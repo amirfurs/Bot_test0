@@ -626,7 +626,15 @@ async def get_bot_guilds():
 async def get_bot_settings(guild_id: str):
     settings = await db.bot_settings.find_one({"guild_id": guild_id})
     if not settings:
-        raise HTTPException(status_code=404, detail="Settings not found")
+        # Create default settings if none exist
+        default_settings = BotSettings(guild_id=guild_id)
+        await db.bot_settings.insert_one(default_settings.dict(by_alias=True, exclude_unset=True))
+        settings = default_settings.dict(by_alias=True, exclude_unset=True)
+    
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in settings:
+        settings["_id"] = str(settings["_id"])
+    
     return settings
 
 @api_router.put("/bot/settings/{guild_id}")
