@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import uuid
 
 # Get the backend URL from frontend/.env
-BACKEND_URL = "https://86b1a3dc-24c8-4a94-87be-d7d3280dc19b.preview.emergentagent.com/api"
+BACKEND_URL = "https://a47d6273-28dc-420a-83e8-45506512c185.preview.emergentagent.com/api"
 
 class DiscordBotBackendTest(unittest.TestCase):
     """Test suite for Discord Bot Backend API"""
