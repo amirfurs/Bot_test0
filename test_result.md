@@ -206,15 +206,18 @@ backend:
 
   - task: "REST API Endpoints"
     implemented: true
-    working: true
+    working: false
     file: "server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Implemented API endpoints for bot status, guilds, settings, stats, members, strikes, and mod actions"
+      - working: false
+        agent: "testing"
+        comment: "Basic endpoints (/api/bot/status and /api/bot/guilds) are working correctly. However, all database-related endpoints (/api/bot/settings, /api/bot/stats, /api/bot/members, /api/bot/strikes, /api/bot/actions) are returning 500 Internal Server Error. The issue is related to MongoDB ObjectId serialization - 'ObjectId' objects are not JSON serializable."
 
 frontend:
   - task: "Dashboard UI"
