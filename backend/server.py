@@ -28,6 +28,10 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Create a separate client for API endpoints
+api_client = AsyncIOMotorClient(mongo_url)
+api_db = api_client[os.environ['DB_NAME']]
+
 # Discord Bot Configuration
 DISCORD_TOKEN = os.environ.get('DISCORD_BOT_TOKEN')
 DISCORD_BOT_ID = os.environ.get('DISCORD_BOT_ID')
