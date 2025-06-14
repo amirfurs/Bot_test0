@@ -321,8 +321,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "REST API Endpoints"
-    - "MongoDB Database Integration"
     - "Frontend Interface Improvement"
   stuck_tasks: []
   test_all: false
